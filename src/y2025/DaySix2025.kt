@@ -38,8 +38,8 @@ object DaySix2025 {
 
     private fun parseColumn(rows: List<String>, index: Int): Long {
         var total = 0L
-        for (element in rows) {
-            val char = element[index]
+        for (row in rows) {
+            val char = row[index]
             if (char.isDigit()) total = total * 10 + char.toString().toInt()
         }
         return total
