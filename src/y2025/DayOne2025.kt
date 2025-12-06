@@ -2,7 +2,7 @@ package y2025
 
 import java.io.File
 
-object DayOne {
+object DayOne2025 {
 
     fun solution() {
         val rotationsFile = File("resources/2025/rotations.txt")

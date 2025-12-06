@@ -2,7 +2,7 @@ package y2025
 
 import java.io.File
 
-object DayFour {
+object DayFour2025 {
 
     private var changed = true
 

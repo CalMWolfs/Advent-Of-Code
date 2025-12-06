@@ -3,7 +3,7 @@ package y2025
 import java.io.File
 import kotlin.math.pow
 
-object DayThree {
+object DayThree2025 {
 
     fun solution() {
         val file = File("resources/2025/batteries.txt")
