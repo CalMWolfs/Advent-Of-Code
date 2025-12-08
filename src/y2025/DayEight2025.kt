@@ -37,21 +37,21 @@ object DayEight2025 {
         for ((pos, _) in topCircuits) {
             if (found) continue
             val (pos1, pos2) = pos
-            val pos1Info = circuits.indexOfFirst { it.contains(pos1) }
-            val pos2Info = circuits.indexOfFirst { it.contains(pos2) }
+            val pos1Index = circuits.indexOfFirst { it.contains(pos1) }
+            val pos2Index = circuits.indexOfFirst { it.contains(pos2) }
 
             when {
-                pos1Info == -1 && pos2Info == -1 -> circuits.add(mutableSetOf(pos1, pos2))
-                pos1Info == -1 -> circuits[pos2Info].add(pos1)
-                pos2Info == -1 -> circuits[pos1Info].add(pos2)
-                pos1Info == pos2Info -> {}
+                pos1Index == -1 && pos2Index == -1 -> circuits.add(mutableSetOf(pos1, pos2))
+                pos1Index == -1 -> circuits[pos2Index].add(pos1)
+                pos2Index == -1 -> circuits[pos1Index].add(pos2)
+                pos1Index == pos2Index -> {}
                 else -> {
-                    circuits[pos1Info].addAll(circuits[pos2Info])
-                    circuits.removeAt(pos2Info)
+                    circuits[pos1Index].addAll(circuits[pos2Index])
+                    circuits.removeAt(pos2Index)
                 }
             }
 
-            if (circuits.size == 1 && circuits.first().size == 1000) {
+            if (circuits.size == 1 && circuits.first().size == circuitPositions.size) {
                 total = circuitPositions[pos1].x * circuitPositions[pos2].x
                 found = true
             }
