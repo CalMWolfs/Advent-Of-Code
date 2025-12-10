@@ -68,7 +68,7 @@ object DayNine2025 {
             for (j in 0..<maximumX) {
                 when {
                     !inside && !row.get(j) -> {}
-                    inside && !row.get(j) -> matrix[i][j] = true
+                    inside && !row.get(j) -> row[j] = true
                     inside && row.get(j) && !row[j + 1] -> inside = false
                     !inside && row.get(j) && !row[j + 1] -> inside = true
                 }
