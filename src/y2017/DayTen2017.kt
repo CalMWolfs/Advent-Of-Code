@@ -4,14 +4,23 @@ import java.io.File
 
 object DayTen2017 {
 
-    @OptIn(ExperimentalStdlibApi::class)
     fun solution() {
         val file = File("resources/2017/twists.txt")
         val text = file.readText()
         val startTime = System.nanoTime()
+
+        val total = findKnotHash(text)
+
+        val totalNs = System.nanoTime() - startTime
+        println("totalNS: $totalNs")
+        println("total: $total")
+    }
+
+    @OptIn(ExperimentalStdlibApi::class)
+    fun findKnotHash(input: String): String {
         var total = ""
 
-        val twists = text.map { it.code }.toMutableList()
+        val twists = input.map { it.code }.toMutableList()
         twists.addAll(listOf(17, 31, 73, 47, 23))
 
         val listSize = 256
@@ -49,9 +58,6 @@ object DayTen2017 {
         for (sparse in sparseHashes) {
             total += sparse.toHexString().takeLast(2)
         }
-
-        val totalNs = System.nanoTime() - startTime
-        println("totalNS: $totalNs")
-        println("total: $total")
+        return total
     }
 }
