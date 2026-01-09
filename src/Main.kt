@@ -1,7 +1,9 @@
+import y2017.DayEleven2017
 import java.io.File
 
 fun main() {
-//    val file = File("resources/2025/--.txt")
+    DayEleven2017.solution()
+    val file = File("resources/2017/.txt")
 //    val text = file.readLines()
 //    val startTime = System.nanoTime()
 //    var total = 0
