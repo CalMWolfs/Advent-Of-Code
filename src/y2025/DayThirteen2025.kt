@@ -1,7 +1,6 @@
 package y2025
 
 import java.io.File
-import kotlin.math.max
 
 object DayThirteen2025 {
 
@@ -24,15 +23,11 @@ object DayThirteen2025 {
 
                     }
                 }
-                val board = DnaBoard(initialBoard)
-
-                board.solveBoard()
+                DnaBoard(initialBoard)
 
                 lineBuffer.clear()
             }
         }
-
-        total = maxSwaps
 
         val totalNs = System.nanoTime() - startTime
         println("totalNS: $totalNs")
@@ -62,60 +57,59 @@ object DayThirteen2025 {
         }
     }
 
-    private var maxSwaps = Int.MIN_VALUE
-
     private data class DnaBoard(private val initialBoard: List<MutableList<TileColor>>) {
-        val start = initialBoard.first()
-        val end = initialBoard.last()
-        val middleColumns = initialBoard.drop(1).dropLast(1).toMutableList()
-
         var swapsNeeded: Int
         var swaps: List<Pair<Pair<Int, Int>, Pair<Int, Int>>>
 
         init {
-            val solved = solveBoard()
+            val solved = solveBoard(false)
             swapsNeeded = solved.first
             swaps = solved.second
-            if (swapsNeeded == 11) println(initialBoard)
-            maxSwaps = max(maxSwaps, swapsNeeded)
+            println("without swapping ends: ${solved.first}")
+            println("with swapping ends: ${solveBoard(true).first}")
+            println()
         }
 
-        fun solveBoard(allowEnds: Boolean = true): Pair<Int, List<Pair<Pair<Int, Int>, Pair<Int, Int>>>> {
-            val midColumnsAmt = if (!allowEnds) MID_COLUMNS_SIZE else MID_COLUMNS_SIZE + 2
+        private fun solveBoard(allowEnds: Boolean): Pair<Int, List<Pair<Pair<Int, Int>, Pair<Int, Int>>>> {
+            val firstMutable = if (allowEnds) 0 else 1
+            val lastMutable = if (allowEnds) initialBoard.lastIndex else initialBoard.lastIndex - 1
+            val mutableCount = lastMutable - firstMutable + 1
 
-            val dp = Array(midColumnsAmt) { IntArray(ROW_PERMUTATIONS.size) { UNREACHABLE } }
-            val parent = Array(midColumnsAmt) { IntArray(ROW_PERMUTATIONS.size) { -1 } }
+            val dp = Array(mutableCount) { IntArray(ROW_PERMUTATIONS.size) { UNREACHABLE } }
+            val parent = Array(mutableCount) { IntArray(ROW_PERMUTATIONS.size) { -1 } }
 
-            val cost = Array(midColumnsAmt) { IntArray(ROW_PERMUTATIONS.size) }
-            val swapMap = Array(midColumnsAmt) { Array(ROW_PERMUTATIONS.size) { emptyList<Pair<Int, Int>>() } }
+            val cost = Array(mutableCount) { IntArray(ROW_PERMUTATIONS.size) }
+            val swapMap = Array(mutableCount) { Array(ROW_PERMUTATIONS.size) { emptyList<Pair<Int, Int>>() } }
 
-            for (c in 0..<midColumnsAmt) {
+            for (i in 0..<mutableCount) {
+                val colIndex = firstMutable + i
+                val column = initialBoard[colIndex]
+
                 for (p in ROW_PERMUTATIONS.indices) {
-                    val perm = ROW_PERMUTATIONS[p].map { middleColumns[c][it] }
-                    val (cst, sw) = getMinimumColumnSwaps(middleColumns[c], perm)
-                    cost[c][p] = cst
-                    swapMap[c][p] = sw
+                    val perm = ROW_PERMUTATIONS[p].map { column[it] }
+                    val (cst, sw) = getMinimumColumnSwaps(column, perm)
+                    cost[i][p] = cst
+                    swapMap[i][p] = sw
                 }
             }
 
             for (p in ROW_PERMUTATIONS.indices) {
-                val perm = ROW_PERMUTATIONS[p].map { middleColumns[0][it] }
-                if (canColumnsConnect(start, perm)) {
-                    dp[0][p] = cost[0][p]
-                }
+                val perm = ROW_PERMUTATIONS[p].map { initialBoard[firstMutable][it] }
+                if (!allowEnds && !canColumnsConnect(initialBoard[0], perm)) continue
+                dp[0][p] = cost[0][p]
             }
 
-            for (c in 1..<midColumnsAmt) {
+            for (i in 1..<mutableCount) {
                 for (p in ROW_PERMUTATIONS.indices) {
-                    val cur = ROW_PERMUTATIONS[p].map { middleColumns[c][it] }
+                    val cur = ROW_PERMUTATIONS[p].map { initialBoard[firstMutable + i][it] }
                     for (q in ROW_PERMUTATIONS.indices) {
-                        if (dp[c - 1][q] == UNREACHABLE) continue
-                        val prev = ROW_PERMUTATIONS[q].map { middleColumns[c - 1][it] }
+                        if (dp[i - 1][q] == UNREACHABLE) continue
+                        val prev = ROW_PERMUTATIONS[q].map { initialBoard[firstMutable + i - 1][it] }
                         if (canColumnsConnect(prev, cur)) {
-                            val newCost = dp[c - 1][q] + cost[c][p]
-                            if (newCost < dp[c][p]) {
-                                dp[c][p] = newCost
-                                parent[c][p] = q
+                            val newCost = dp[i - 1][q] + cost[i][p]
+                            if (newCost < dp[i][p]) {
+                                dp[i][p] = newCost
+                                parent[i][p] = q
                             }
                         }
                     }
@@ -124,33 +118,33 @@ object DayThirteen2025 {
 
             var best = UNREACHABLE
             var last = -1
+
             for (p in ROW_PERMUTATIONS.indices) {
-                val perm = ROW_PERMUTATIONS[p].map { middleColumns.last()[it] }
-                if (dp[midColumnsAmt - 1][p] < UNREACHABLE && canColumnsConnect(perm, end)) {
-                    if (dp[midColumnsAmt - 1][p] < best) {
-                        best = dp[midColumnsAmt - 1][p]
-                        last = p
-                    }
+                val perm = ROW_PERMUTATIONS[p].map { initialBoard[lastMutable][it] }
+                if (!allowEnds && !canColumnsConnect(perm, initialBoard.last())) continue
+                if (dp[mutableCount - 1][p] < best) {
+                    best = dp[mutableCount - 1][p]
+                    last = p
                 }
             }
 
             val result = mutableListOf<Pair<Pair<Int, Int>, Pair<Int, Int>>>()
-            var col = midColumnsAmt - 1
+            var i = mutableCount - 1
             var cur = last
 
-            while (col >= 0) {
-                for ((a, b) in swapMap[col][cur]) {
-                    result += (col + 1 to a) to (col + 1 to b)
+            while (i >= 0) {
+                val colIndex = firstMutable + i
+                for ((a, b) in swapMap[i][cur]) {
+                    result += (colIndex to a) to (colIndex to b)
                 }
-                cur = parent[col][cur]
-                col--
+                cur = parent[i][cur]
+                i--
             }
 
             return best to result
         }
 
         companion object {
-            private const val MID_COLUMNS_SIZE = 7
             private const val ROWS = 4
             private const val UNREACHABLE = 1_000
 
@@ -180,7 +174,10 @@ object DayThirteen2025 {
                 return true
             }
 
-            private fun getMinimumColumnSwaps(from: List<TileColor>, to: List<TileColor>): Pair<Int, List<Pair<Int, Int>>> {
+            private fun getMinimumColumnSwaps(
+                from: List<TileColor>,
+                to: List<TileColor>
+            ): Pair<Int, List<Pair<Int, Int>>> {
                 val pos = IntArray(ROWS)
                 for (i in 0..<ROWS) pos[from.indexOf(to[i])] = i
 
