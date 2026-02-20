@@ -44,7 +44,9 @@ FetchContent_MakeAvailable(googletest)
 
 add_executable(Advent src/main.cpp
         src/y2018/DayOne2018.cpp
-        src/y2018/DayOne2018.h)
+        src/y2018/DayOne2018.h
+        src/y2018/DayTwo2018.cpp
+        src/y2018/DayTwo2018.h)
 
 target_link_libraries(Advent gtest_main)
 
