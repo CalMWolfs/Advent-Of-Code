@@ -50,7 +50,11 @@ add_executable(Advent src/main.cpp
         src/y2018/DayThree2018.cpp
         src/y2018/DayThree2018.h
         src/y2018/DayFour2018.cpp
-        src/y2018/DayFour2018.h)
+        src/y2018/DayFour2018.h
+        src/y2018/DayFive2018.cpp
+        src/y2018/DayFive2018.h
+        src/y2018/DaySix2018.cpp
+        src/y2018/DaySix2018.h)
 
 target_link_libraries(Advent gtest_main)
 
