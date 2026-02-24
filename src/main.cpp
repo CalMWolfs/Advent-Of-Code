@@ -1,5 +1,5 @@
 
-#include "y2018/DaySix2018.h"
+#include "y2018/DaySeven2018.h"
 
 // #include <chrono>
 // #include <iostream>
@@ -7,7 +7,7 @@
 // #include <vector>
 
 int main() {
-    DaySix2018::solution();
+    DaySeven2018::solution();
 
     // std::ifstream file("resources/2018/frequencies.txt");
     //
