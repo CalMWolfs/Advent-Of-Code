@@ -5,7 +5,6 @@
 class DayOne2018 {
 public:
     static void solution();
-
 };
 
 

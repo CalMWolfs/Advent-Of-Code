@@ -53,7 +53,7 @@ void DayThree2018::solution() {
 
     std::vector<ClaimData> claims;
 
-    for (const std::string &line : lines) {
+    for (const std::string &line: lines) {
         claims.emplace_back(line);
     }
 
@@ -61,7 +61,7 @@ void DayThree2018::solution() {
 
     std::set<int> untouchedClaims;
 
-    for (const auto &claim : claims) {
+    for (const auto &claim: claims) {
         bool wasValid = true;
         for (size_t i = claim.startX; i < claim.startX + claim.width; ++i) {
             for (size_t j = claim.startY; j < claim.startY + claim.height; ++j) {
@@ -76,7 +76,7 @@ void DayThree2018::solution() {
         if (wasValid) untouchedClaims.insert(claim.number);
     }
 
-    for (int untouchedClaim : untouchedClaims) {
+    for (int untouchedClaim: untouchedClaims) {
         total = untouchedClaim;
     }
 
