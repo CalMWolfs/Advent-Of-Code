@@ -1,8 +1,8 @@
-package y2025
+package experimental
 
 import java.io.File
 
-object DayThirteen2025 {
+object GreenhouseExperiment {
 
     fun solution() {
         val file = File("resources/2025/greenhouse.txt")
@@ -37,7 +37,7 @@ object DayThirteen2025 {
     private val colorSet = setOf(1, 2, 3, 4)
 
     fun generateTests() {
-        val file = File("resources/2025/greenhouse.txt")
+        val file = File("resources/experimental/greenhouse.txt")
 
         file.writeText("")
         for (i in 0..<500) {
